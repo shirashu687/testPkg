@@ -1,0 +1,15 @@
+{
+  "name": "@shirashu687/my-first-package",
+  "version": "1.0.0",
+  "description": "A minimal npm package published to GitHub Packages",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": ["greeting", "github-packages"],
+  "author": "shirashu687",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

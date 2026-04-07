@@ -1,0 +1,73 @@
+# .github/workflows/publish.yml
+#
+# GitHub Packages への自動 publish ワークフロー
+#
+# 【トリガー】
+#   - GitHub 上で "Release" を作成したとき（推奨）
+#   - または手動実行（workflow_dispatch）
+#
+# 【必要な準備】
+#   1. リポジトリ名を package.json の name と合わせる
+#      例: github.com/octocat/my-first-package
+#          → package.json: "@octocat/my-first-package"
+#
+#   2. Settings > Actions > General
+#      → "Workflow permissions" を "Read and write permissions" に設定
+#      （GITHUB_TOKEN に packages:write を付与するため）
+#
+#   3. PAT は不要！GITHUB_TOKEN が自動で使われる
+
+name: Publish to GitHub Packages
+
+on:
+  # v* タグを付けた Release 作成時に自動 publish
+  release:
+    types: [published]
+
+  # 手動トリガー（テスト用）
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run tests
+        run: node test.js
+
+  publish:
+    name: Publish
+    needs: test          # テストが通った場合のみ publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write    # GitHub Packages への書き込みを許可
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js (GitHub Packages registry)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          # scope を指定すると .npmrc が自動生成される
+          scope: '@YOUR_GITHUB_USERNAME'
+
+      # package.json に dependencies があれば install する
+      # 今回は依存なしなのでスキップ可だが、慣習として記載
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Publish package
+        run: npm publish
+        env:
+          # actions/setup-node が .npmrc に NODE_AUTH_TOKEN を埋め込む
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

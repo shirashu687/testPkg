@@ -1,0 +1,21 @@
+{
+  "name": "@shirashu687/my-first-package",
+  "version": "1.0.0",
+  "description": "A minimal TypeScript npm package published to GitHub Packages",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "test": "node -e \"const {greet}=require('./dist/index');console.log(greet('World'));\""
+  },
+  "keywords": ["greeting", "github-packages", "typescript"],
+  "author": "shirashu687",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
