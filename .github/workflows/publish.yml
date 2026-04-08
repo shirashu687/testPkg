@@ -59,7 +59,7 @@ jobs:
           node-version: '20'
           registry-url: 'https://npm.pkg.github.com'
           # scope を指定すると .npmrc が自動生成される
-          scope: '@YOUR_GITHUB_USERNAME'
+          scope: '@shirashu687'
 
       # package.json に dependencies があれば install する
       # 今回は依存なしなのでスキップ可だが、慣習として記載
